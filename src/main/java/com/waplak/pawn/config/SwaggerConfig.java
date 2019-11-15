@@ -18,7 +18,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("Spring Ehcache Service")
+                .groupName("Pawn Advance Service")
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo()).select()
                 .apis(RequestHandlerSelectors
@@ -29,8 +29,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-        		.title("Spring Ehcache Service Documentation")
-                .description("Spring Ehcache Service REST API Documentation")
+        		.title("Pawn Advance Service Documentation")
+                .description("Pawn Advance Service Service REST API Documentation")
                 .version("1.0")
                 .build();
     }

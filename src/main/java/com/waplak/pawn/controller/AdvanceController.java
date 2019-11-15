@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waplak.pawn.common.CommonConstantValue;
 import com.waplak.pawn.common.GsonUtil;
 import com.waplak.pawn.config.AppErrorConfig;
+import com.waplak.pawn.exception.PawnException;
 import com.waplak.pawn.request.AdvanceRequest;
 import com.waplak.pawn.service.AdvanceService;
 
@@ -41,12 +43,17 @@ public class AdvanceController {
 		logger.info("Start save advance controller {}", GsonUtil.getToString(request, AdvanceRequest.class));
 		Map<String, Object> response = new HashMap<>();
 		try {
-			response.put("STATUS", true);
-			response.put("DATA", advanceService.saveAdvance(request));
+			response.put(CommonConstantValue.STATUS, true);
+			response.put(CommonConstantValue.DATA, advanceService.saveAdvance(request));
+		} catch(PawnException e) {
+			response.put(CommonConstantValue.STATUS, false);
+			response.put(CommonConstantValue.DATA, appErrorConfig.getNotExist());
+			logger.error("Add Advance {} -> {}", CommonConstantValue.STATUS_FAILED, e.getMessage());
+			
 		} catch (Exception e) {
-			response.put("STATUS", false);
-			response.put("DATA", appErrorConfig.getCreate());
-			logger.info("Failed Create Advance {}", e.getMessage());
+			response.put(CommonConstantValue.STATUS, false);
+			response.put(CommonConstantValue.DATA, appErrorConfig.getCreate());
+			logger.error("Add Advance {} -> {}", CommonConstantValue.STATUS_FAILED, e.getMessage());
 		}
 
 		return response;
@@ -59,8 +66,13 @@ public class AdvanceController {
 		logger.info("Get Data From NIC {}", nic);
 		Map<String, Object> response = new HashMap<>();
 		try {
-			response.put("STATUS", true);
-			response.put("DATA", advanceService.getByNic(nic));
+			response.put(CommonConstantValue.STATUS, true);
+			response.put(CommonConstantValue.DATA, advanceService.getByNic(nic));
+		
+		}catch(PawnException e) {
+			response.put(CommonConstantValue.STATUS, false);
+			response.put(CommonConstantValue.DATA, appErrorConfig.getNotExist());
+			logger.info("Failed Get Data From NIC {}", e.getMessage());
 			
 		}catch (Exception e) {
 			response.put("STATUS", false);

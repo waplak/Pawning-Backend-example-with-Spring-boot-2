@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waplak.pawn.common.GsonUtil;
 import com.waplak.pawn.config.AppErrorConfig;
 import com.waplak.pawn.entity.AdvanceHeader;
+import com.waplak.pawn.exception.PawnException;
 import com.waplak.pawn.repository.AdvanceRepo;
 import com.waplak.pawn.request.AdvanceRequest;
 import com.waplak.pawn.response.AdvanceResponse;
@@ -34,7 +35,7 @@ public class AdvanceServiceImpl implements AdvanceService {
 	}
 
 	@Override
-	public AdvanceResponse saveAdvance(AdvanceRequest request) {
+	public AdvanceResponse saveAdvance(AdvanceRequest request) throws PawnException{
 		logger.info("Start service save Advance{}", GsonUtil.getToString(request, AdvanceRequest.class));
 		return buildResponse(advanceRepo.save(buildEntity(new AdvanceHeader(), request)));
 
@@ -62,7 +63,7 @@ public class AdvanceServiceImpl implements AdvanceService {
 	}
 
 	@Override
-	public NicResponse getByNic(String nic) throws Exception{
+	public NicResponse getByNic(String nic) throws PawnException{
 		AdvanceHeader advHeader =  advanceRepo.findByNic(nic);
 		if (advHeader!=null) {
 			return NicResponse.builder()
@@ -70,7 +71,7 @@ public class AdvanceServiceImpl implements AdvanceService {
 					.custFirstName(advHeader.getCustFirstName())
 					.custLastName(advHeader.getCustLastName()).build();
 		}
-		throw new Exception(appErrorConfig.getNotExist());
+		throw new PawnException(appErrorConfig.getNotExist());
 		
 	}
 }
