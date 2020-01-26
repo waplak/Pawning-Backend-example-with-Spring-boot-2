@@ -1,6 +1,7 @@
 package com.waplak.pawn.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -12,14 +13,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waplak.pawn.common.CommonConstantValue;
 import com.waplak.pawn.common.GsonUtil;
 import com.waplak.pawn.config.AppErrorConfig;
+import com.waplak.pawn.entity.AdvanceView;
 import com.waplak.pawn.exception.PawnException;
 import com.waplak.pawn.request.AdvanceRequest;
 import com.waplak.pawn.service.AdvanceService;
+import com.waplak.pawn.service.AdvanceViewService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,6 +36,9 @@ public class AdvanceController {
 	private AdvanceService advanceService;
 	@Autowired
 	private AppErrorConfig appErrorConfig;
+	
+	@Autowired
+	private AdvanceViewService advanceViewService;
 
 	public AdvanceController() {
 		this.logger = LoggerFactory.getLogger(this.getClass());
@@ -88,5 +95,16 @@ public class AdvanceController {
 
 		return "welcome to swagger";
 	}
-
+	
+	@ApiOperation(value = "Get Data From View")
+	@GetMapping(value = "/custAdv/{serialNo}")
+	public List<AdvanceView> getAdvanceDetails(@ApiParam (required=true,name ="serialNo",value = "Serial Number is Required")@RequestParam String serialNo) {
+		logger.info("Serial Number from Controller {} ", serialNo);
+		return advanceViewService.getAdvanceDataFromSerial(serialNo);
+	}
+	@ApiOperation(value = "find all from view")
+	@GetMapping(value = "/findAll")
+	public List<AdvanceView> findAll() {
+		return advanceViewService.findAll();
+	}
 }
